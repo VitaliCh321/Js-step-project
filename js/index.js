@@ -244,6 +244,7 @@ const DATA = [
 ];
 
 const defaultData = [...DATA];
+let arrayNow = [];
 
 const trainersCardsUl = document.querySelector(".trainers-cards__container");
 
@@ -265,6 +266,113 @@ const disableScroll = function () {
 const enableScroll = function () {
   document.body.style.overflow = "";
 };
+
+const sortTrainersByLastName = function (arrayOfObjects) {
+  const arraySortedByLastName = arrayOfObjects.sort((a, b) =>
+    a["last name"].localeCompare(b["last name"], "uk"),
+  );
+
+  // localStorage.setItem(
+  //   "sortedArrayByLastName",
+  //   JSON.stringify(arraySortedByLastName),
+  // );
+  return arraySortedByLastName;
+};
+
+const sortTrainersByExperience = function (arrayOfObjects) {
+  const arraySortedByExperience = arrayOfObjects.sort((a, b) => {
+    const aExp = parseInt(a.experience);
+    const bExp = parseInt(b.experience);
+    return bExp - aExp;
+  });
+
+  return arraySortedByExperience;
+};
+
+// const sortedByLastNameLs = JSON.parse(
+//   localStorage.getItem("sortedArrayByLastName"),
+// );
+
+const filterTrainersByDirectionAndCategory = function (
+  arrayOfObjects,
+  direction,
+  category,
+) {
+  const ALL = "all";
+
+  const GYMDIRECTION = "Тренажерний зал";
+  const FIGHTCLUBDIRECTION = "Бійцівський клуб";
+  const CHILDCLUBDIRECTION = "Дитячий клуб";
+  const SWIMMINGPOOLDIRECTION = "Басейн";
+
+  const MASTERCATEGORY = "майстер";
+  const SPECIALISTCATEGORY = "спеціаліст";
+  const INSTRUCTORCATEGORY = "інструктор";
+
+  const directionsObject = {
+    gym: GYMDIRECTION,
+    "fight club": FIGHTCLUBDIRECTION,
+    "kids club": CHILDCLUBDIRECTION,
+    "swimming pool": SWIMMINGPOOLDIRECTION,
+  };
+
+  const categoryObject = {
+    master: MASTERCATEGORY,
+    specialist: SPECIALISTCATEGORY,
+    instructor: INSTRUCTORCATEGORY,
+  };
+
+  // const directionValue = directionsObject[direction];
+  // const categoryValue = categoryObject[category];
+
+  console.log(
+    `"directionsObject[direction]: "${directionsObject[direction]} and categoryObject[category]: ${categoryObject[category]}`,
+  );
+
+  if (direction && category === ALL) {
+    return renderTrainerCardsByDefault(DATA);
+  }
+
+  if (
+    directionsObject[direction] !== "all" &&
+    categoryObject[category] !== "all"
+  ) {
+    const filteredArray = arrayOfObjects.filter((trainerObj) => {
+      return (
+        trainerObj.specialization?.includes(directionsObject[direction]) &&
+        trainerObj.category?.includes(categoryObject[category])
+      );
+    });
+
+    arrayNow = filteredArray.map((obj) => ({ ...obj }));
+    return filteredArray;
+  }
+
+  if (directionsObject[direction]) {
+    console.log("Bla bla bla");
+    const filteredArrayByDirection = arrayOfObjects.filter((trainerObj) => {
+      return trainerObj.specialization?.includes(directionsObject[direction]);
+    });
+
+    arrayNow = filteredArrayByDirection.map((obj) => ({ ...obj }));
+    return filteredArrayByDirection;
+  }
+
+  if (categoryObject[category]) {
+    console.log("Bla bla bla");
+    const filteredArrayByCategory = arrayOfObjects.filter((trainerObj) => {
+      return trainerObj.category?.includes(categoryObject[category]);
+    });
+
+    arrayNow = filteredArrayByCategory.map((obj) => ({ ...obj }));
+    return filteredArrayByCategory;
+  }
+};
+
+console.log(
+  "filterTrainersByDirectionAndCategory(defaultData): ",
+  filterTrainersByDirectionAndCategory(defaultData),
+);
 
 const renderTrainerCardsByDefault = function (arrayOfTrainers) {
   // trainersCardsUl.innerHTML = "";
@@ -347,122 +455,9 @@ const renderTrainerCardsByDefault = function (arrayOfTrainers) {
   // trainersCardsUl.append(container);
 };
 
-renderTrainerCardsByDefault(DATA);
-
-const sortTrainersByLastName = function (arrayOfObjects) {
-  const arraySortedByLastName = arrayOfObjects.sort((a, b) =>
-    a["last name"].localeCompare(b["last name"], "uk"),
-  );
-
-  return arraySortedByLastName;
-};
-
-const sortTrainersByExperience = function (arrayOfObjects) {
-  const arraySortedByExperience = arrayOfObjects.sort((a, b) => {
-    const aExp = parseInt(a.experience);
-    const bExp = parseInt(b.experience);
-    return bExp - aExp;
-  });
-
-  return arraySortedByExperience;
-};
-
-const filterTrainersByDirectionAndCategory = function (
-  arrayOfObjects,
-  direction,
-  category,
-) {
-  const GYMDIRECTION = "Тренажерний зал";
-  const FIGHTCLUBDIRECTION = "Бійцівський клуб";
-  const CHILDCLUBDIRECTION = "Дитячий клуб";
-  const SWIMMINGPOOLDIRECTION = "Басейн";
-
-  const MASTERCATEGORY = "майстер";
-  const SPECIALISTCATEGORY = "спеціаліст";
-  const INSTRUCTORCATEGORY = "інструктор";
-
-  const directionsObject = {
-    gym: GYMDIRECTION,
-    "fight club": FIGHTCLUBDIRECTION,
-    "kids club": CHILDCLUBDIRECTION,
-    "swimming pool": SWIMMINGPOOLDIRECTION,
-  };
-
-  const categoryObject = {
-    master: MASTERCATEGORY,
-    specialist: SPECIALISTCATEGORY,
-    instructor: INSTRUCTORCATEGORY,
-  };
-
-  // const directionValue = directionsObject[direction];
-  // const categoryValue = categoryObject[category];
-
-  // console.log("directionValue: ", directionValue);
-
-  // if (!directionsObject[direction] || !categoryObject[category]) {
-  //   return [];
-  // }
-
-  // if (
-  //   directionsObject[direction] !== "all" &&
-  //   categoryObject[category] !== "all"
-  // ) {
-  //   return [];
-  // }
-  // if (condition) {
-  // }
-
-  console.log(
-    `${("directionsObject[direction]: ", directionsObject[direction])} and ${("categoryObject[category]: ", categoryObject[category])}`,
-  );
-
-  if (directionsObject[direction] && categoryObject[category]) {
-    const filteredArray = arrayOfObjects.filter((trainerObj) => {
-      return (
-        trainerObj.specialization?.includes(directionsObject[direction]) &&
-        trainerObj.category?.includes(categoryObject[category])
-      );
-    });
-    return filteredArray;
-  }
-
-  if (directionsObject[direction]) {
-    console.log("Bla bla bla");
-    const filteredArrayByDirection = arrayOfObjects.filter((trainerObj) => {
-      return trainerObj.specialization?.includes(directionsObject[direction]);
-    });
-
-    return filteredArrayByDirection;
-  }
-
-  if (categoryObject[category]) {
-    console.log("Bla bla bla");
-    const filteredArrayByCategory = arrayOfObjects.filter((trainerObj) => {
-      return trainerObj.category?.includes(categoryObject[category]);
-    });
-
-    return filteredArrayByCategory;
-  }
-
-  // if (
-  //   directionsObject[direction] !== "all" &&
-  //   categoryObject[category] !== "all"
-  // ) {
-  //   const filteredArray = arrayOfObjects.filter((trainerObj) => {
-  //     return (
-  //       trainerObj.category?.includes(categoryObject[category]) &&
-  //       trainerObj.specialization?.includes(directionsObject[direction])
-  //     );
-  //   });
-
-  //   return filteredArray;
-  // }
-};
-
-console.log(
-  "filterTrainersByDirectionAndCategory(defaultData): ",
-  filterTrainersByDirectionAndCategory(defaultData),
-);
+document.addEventListener("DOMContentLoaded", function () {
+  renderTrainerCardsByDefault(DATA);
+});
 
 sortingSection.addEventListener("click", (event) => {
   if (event.target === event.currentTarget || event.target.tagName === "P") {
@@ -481,7 +476,12 @@ sortingSection.addEventListener("click", (event) => {
   }
 
   if (event.target.classList.contains("btn-1")) {
-    renderTrainerCardsByDefault(sortTrainersByLastName(defaultData));
+    if (arrayNow.length > 0) {
+      renderTrainerCardsByDefault(sortTrainersByLastName(arrayNow));
+      console.log("array Now: ", arrayNow);
+    } else {
+      renderTrainerCardsByDefault(sortTrainersByLastName(defaultData));
+    }
   }
 
   if (event.target.classList.contains("btn-0")) {
@@ -489,7 +489,11 @@ sortingSection.addEventListener("click", (event) => {
   }
 
   if (event.target.classList.contains("btn-2")) {
-    renderTrainerCardsByDefault(sortTrainersByExperience(defaultData));
+    if (arrayNow.length > 0) {
+      renderTrainerCardsByDefault(sortTrainersByExperience(arrayNow));
+    } else {
+      renderTrainerCardsByDefault(sortTrainersByExperience(defaultData));
+    }
   }
 });
 
@@ -514,10 +518,7 @@ submitInput.addEventListener("click", (event) => {
     renderTrainerCardsByDefault(DATA);
   }
 
-  if (
-    selectedRadioDirection.value !== undefined &&
-    selectedRadioCategory.value !== undefined
-  ) {
+  if (selectedRadioDirection.value && selectedRadioCategory.value) {
     renderTrainerCardsByDefault(
       filterTrainersByDirectionAndCategory(
         defaultData,
@@ -526,116 +527,4 @@ submitInput.addEventListener("click", (event) => {
       ),
     );
   }
-
-  // if (selectedRadioDirection.value && selectedRadioCategory.value) {
-  //   renderTrainerCardsByDefault(
-  //     filterTrainersByDirectionAndCategory(
-  //       defaultData,
-  //       selectedRadioDirection.value,
-  //       selectedRadioCategory.value,
-  //     ),
-  //   );
-  // }
-
-  // if (selectedRadioDirection.value && selectedRadioCategory.value)
-  //   renderTrainerCardsByDefault(
-  //     filterBySpecialization(
-  //       defaultData,
-  //       selectedRadioDirection.value,
-  //       selectedRadioCategory.value,
-  //     ),
-  //   );
 });
-
-// sideBarAside.addEventListener("click", (event) => {
-//   if (
-//     event.target === event.currentTarget ||
-//     event.target.classList.contains("filters__legend") ||
-//     event.target.classList.contains("filters__fieldset") ||
-//     event.target.classList.contains("sidebar__filters")
-//   ) {
-//     return;
-//   }
-//   console.log("event.target: ", event.target);
-// });
-
-// const renderTrainersCards = function (arrayOfObjects) {
-//   arrayOfObjects.forEach((trainer) => {
-//     const clonedTrainerLi = trainerCardTemplate.cloneNode(true).content;
-//     const trainerLi = clonedTrainerLi.querySelector(".trainer");
-
-//     const trainerImage = clonedTrainerLi.querySelector(".trainer__img");
-//     trainerImage.src = trainer.photo;
-
-//     const trainerParagraph = clonedTrainerLi.querySelector(".trainer__name");
-//     trainerParagraph.innerText = `${trainer["first name"]} ${trainer["last name"]}`;
-
-//     container.append(clonedTrainerLi);
-
-//     if (clonedTrainerLi) {
-//       sideBarAside.hidden = false;
-//       sortingSection.hidden = false;
-//     }
-
-//     console.log("container: ", container);
-
-//     const openModal = function () {
-//       const clonedModalTemplate = modalTemplate.cloneNode(true).content;
-//       const modalBody = clonedModalTemplate.querySelector(".modal__body");
-//       const modal = clonedModalTemplate.querySelector(".modal");
-
-//       const modalImage = clonedModalTemplate.querySelector(".modal__img");
-//       modalImage.src = trainer.photo;
-
-//       const modalName = clonedModalTemplate.querySelector(".modal__name");
-//       modalName.innerText = `${trainer["first name"]} ${trainer["last name"]}`;
-
-//       const modalCategory = clonedModalTemplate.querySelector(
-//         ".modal__point--category",
-//       );
-//       modalCategory.innerText = trainer.category;
-
-//       const modalExperience = clonedModalTemplate.querySelector(
-//         ".modal__point--experience",
-//       );
-//       modalExperience.innerText = trainer.experience;
-
-//       const modalSpecialization = clonedModalTemplate.querySelector(
-//         ".modal__point--specialization",
-//       );
-//       modalSpecialization.innerText = trainer.specialization;
-
-//       const modalDescription =
-//         clonedModalTemplate.querySelector(".modal__text");
-//       modalDescription.innerText = trainer.description;
-
-//       console.log("clonedModalTemplate: ", clonedModalTemplate);
-
-//       disableScroll();
-//       document.body.append(clonedModalTemplate);
-
-//       const closeModalButton = modalBody.querySelector(".modal__close");
-
-//       const closeModal = function () {
-//         // modal.style.display = "none";
-//         modal.remove();
-//         enableScroll();
-//       };
-
-//       console.log("closeModalButton: ", closeModalButton);
-
-//       closeModalButton.addEventListener("click", closeModal);
-//     };
-
-//     const openModalButton = trainerLi.querySelector(".trainer__show-more");
-//     openModalButton.addEventListener("click", openModal);
-//   });
-
-//   trainersCardsUl.append(container);
-//   console.log("trainersCardsUl: ", trainersCardsUl);
-// };
-
-// console.log("renderTrainersCards(DATA):!!! ", renderTrainersCards(DATA));
-// console.log("renderTrainersCards: ", renderTrainersCards(DATA));
-
-// console.log("trainersCardsUl: ", trainersCardsUl);
