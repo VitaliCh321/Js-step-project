@@ -322,20 +322,38 @@ const filterTrainersByDirectionAndCategory = function (
     instructor: INSTRUCTORCATEGORY,
   };
 
-  // const directionValue = directionsObject[direction];
-  // const categoryValue = categoryObject[category];
+  // console.log("YPOOOOOOOOOOOO: ", category);
 
-  console.log(
-    `"directionsObject[direction]: "${directionsObject[direction]} and categoryObject[category]: ${categoryObject[category]}`,
-  );
+  // console.log(
+  //   `"directionsObject[direction]: "${directionsObject[direction]} and categoryObject[category]: ${categoryObject[category]}`,
+  // );
 
-  if (direction && category === ALL) {
+  if (direction === ALL && category === ALL) {
     return renderTrainerCardsByDefault(DATA);
   }
 
+  if (direction === ALL && category !== ALL) {
+    const filteredArrayByCategory = arrayOfObjects.filter((trainerObj) => {
+      return trainerObj.category?.includes(categoryObject[category]);
+    });
+
+    arrayNow = filteredArrayByCategory.map((obj) => ({ ...obj }));
+    return filteredArrayByCategory;
+  }
+
+  if (direction !== ALL && category === ALL) {
+    const filteredArrayByDirection = arrayOfObjects.filter((trainerObj) => {
+      return trainerObj.specialization?.includes(directionsObject[direction]);
+    });
+
+    arrayNow = filteredArrayByDirection.map((obj) => ({ ...obj }));
+    return filteredArrayByDirection;
+  }
+
+
   if (
-    directionsObject[direction] !== "all" &&
-    categoryObject[category] !== "all"
+    direction !== ALL &&
+    category !== ALL
   ) {
     const filteredArray = arrayOfObjects.filter((trainerObj) => {
       return (
@@ -346,26 +364,6 @@ const filterTrainersByDirectionAndCategory = function (
 
     arrayNow = filteredArray.map((obj) => ({ ...obj }));
     return filteredArray;
-  }
-
-  if (directionsObject[direction]) {
-    console.log("Bla bla bla");
-    const filteredArrayByDirection = arrayOfObjects.filter((trainerObj) => {
-      return trainerObj.specialization?.includes(directionsObject[direction]);
-    });
-
-    arrayNow = filteredArrayByDirection.map((obj) => ({ ...obj }));
-    return filteredArrayByDirection;
-  }
-
-  if (categoryObject[category]) {
-    console.log("Bla bla bla");
-    const filteredArrayByCategory = arrayOfObjects.filter((trainerObj) => {
-      return trainerObj.category?.includes(categoryObject[category]);
-    });
-
-    arrayNow = filteredArrayByCategory.map((obj) => ({ ...obj }));
-    return filteredArrayByCategory;
   }
 };
 
