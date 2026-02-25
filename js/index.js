@@ -437,7 +437,7 @@ const renderTrainerCardsByDefault = function (arrayOfTrainers) {
       console.log("closeModalButton: ", closeModalButton);
 
       closeModalButton.addEventListener("click", closeModal);
-      openModalButton.removeEventListener("click", openModal);
+      // openModalButton.removeEventListener("click", openModal);
     };
 
     const openModalButton = li.querySelector(".trainer__show-more");
